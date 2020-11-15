@@ -3,6 +3,7 @@ package com.hovans.local.rest
 import com.hovans.local.domain.local.LocalRepository
 import com.hovans.local.domain.local.LocalService
 import com.hovans.local.domain.local.repository.KakaoRepository
+import com.hovans.local.domain.local.repository.NaverRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -19,7 +20,7 @@ class LocalController {
 	init {
 		val repositories = ArrayList<LocalRepository>()
 		repositories.add(KakaoRepository())
-//		repositories.add(NaverRepository())
+		repositories.add(NaverRepository())
 		localService = LocalService(repositories)
 	}
 
