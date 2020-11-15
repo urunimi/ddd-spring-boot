@@ -6,7 +6,7 @@ import java.util.*
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @Service
-class LocalService constructor(val localRepositories: ArrayList<LocalRepository>) {
+class LocalService constructor(val localRepositories: ArrayList<LocalRepository>, val rankingRepository: RankingRepository) {
 
 	val gson = Gson()
 
@@ -16,6 +16,7 @@ class LocalService constructor(val localRepositories: ArrayList<LocalRepository>
 		for (placeName in placeNames) {
 			places.add(Place(placeName, getPlaceImageUrls(placeName)))
 		}
+		rankingRepository.increase(keyword)
 		return Pair(places, cursorStr)
 	}
 
@@ -61,5 +62,9 @@ class LocalService constructor(val localRepositories: ArrayList<LocalRepository>
 			}
 		}
 		return Pair(ArrayList<String>(), null)
+	}
+
+	fun getRanking(): List<Ranking> {
+		return rankingRepository.getRankings()
 	}
 }

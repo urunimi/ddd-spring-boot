@@ -11,3 +11,8 @@ class Cursor(
 		val currentPage: Int,
 		val pageSize: Int,
 )
+
+class Ranking(
+		val keyword: String,
+		val count: Int,
+)

@@ -2,6 +2,8 @@ package com.hovans.local.rest
 
 import com.hovans.local.domain.local.LocalRepository
 import com.hovans.local.domain.local.LocalService
+import com.hovans.local.domain.local.Ranking
+import com.hovans.local.domain.local.RankingRepository
 import com.hovans.local.domain.local.repository.KakaoRepository
 import com.hovans.local.domain.local.repository.NaverRepository
 import org.springframework.http.HttpStatus
@@ -32,6 +34,11 @@ class LocalController {
 		}
 		val (places, nextCursor) = localService.getPlaces(keyword = keyword, cursor)
 		return ResponseEntity<SearchRes>(SearchRes(places, nextCursor), HttpStatus.OK)
+	}
+
+	@GetMapping(value = ["/v1/rankings"])
+	fun getRankings(): ResponseEntity<RankingRes> {
+		return ResponseEntity(RankingRes(localService.getRanking()), HttpStatus.OK)
 	}
 
 	@GetMapping(value = ["/"])
