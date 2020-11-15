@@ -1,4 +1,4 @@
-package com.hovans.local.domain.local
+package com.hovans.local.domain
 
 interface LocalRepository {
 	fun getPlaceNames(keyword: String, cursor: Cursor): Pair<List<String>, Cursor>

@@ -1,11 +1,12 @@
 package com.hovans.local.rest
 
-import com.hovans.local.domain.local.LocalRepository
-import com.hovans.local.domain.local.LocalService
-import com.hovans.local.domain.local.Ranking
-import com.hovans.local.domain.local.RankingRepository
-import com.hovans.local.domain.local.repository.KakaoRepository
-import com.hovans.local.domain.local.repository.NaverRepository
+import com.hovans.local.domain.LocalRepository
+import com.hovans.local.domain.LocalService
+import com.hovans.local.domain.repository.DbRankingRepository
+import com.hovans.local.domain.repository.JpaRankingRepository
+import com.hovans.local.domain.repository.KakaoRepository
+import com.hovans.local.domain.repository.NaverRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -15,7 +16,7 @@ import java.util.*
 
 
 @RestController
-class LocalController {
+class LocalController @Autowired constructor(jpaRankingRepository: JpaRankingRepository) {
 
 	final var localService: LocalService
 
@@ -23,7 +24,7 @@ class LocalController {
 		val repositories = ArrayList<LocalRepository>()
 		repositories.add(KakaoRepository())
 		repositories.add(NaverRepository())
-		localService = LocalService(repositories)
+		localService = LocalService(repositories, DbRankingRepository(jpaRankingRepository))
 	}
 
 	@GetMapping(value = ["/v1/places"])
@@ -38,7 +39,7 @@ class LocalController {
 
 	@GetMapping(value = ["/v1/rankings"])
 	fun getRankings(): ResponseEntity<RankingRes> {
-		return ResponseEntity(RankingRes(localService.getRanking()), HttpStatus.OK)
+		return ResponseEntity(RankingRes(localService.getRankings()), HttpStatus.OK)
 	}
 
 	@GetMapping(value = ["/"])

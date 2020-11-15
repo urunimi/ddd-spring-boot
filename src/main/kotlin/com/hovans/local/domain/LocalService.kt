@@ -1,10 +1,9 @@
-package com.hovans.local.domain.local
+package com.hovans.local.domain
 
 import com.google.gson.Gson
 import org.springframework.stereotype.Service
 import java.util.*
 
-@Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @Service
 class LocalService constructor(val localRepositories: ArrayList<LocalRepository>, val rankingRepository: RankingRepository) {
 
@@ -64,7 +63,7 @@ class LocalService constructor(val localRepositories: ArrayList<LocalRepository>
 		return Pair(ArrayList<String>(), null)
 	}
 
-	fun getRanking(): List<Ranking> {
+	fun getRankings(): List<Ranking> {
 		return rankingRepository.getRankings()
 	}
 }

@@ -1,14 +1,13 @@
-package com.hovans.local.domain.local.repository
+package com.hovans.local.domain.repository
 
-import com.hovans.local.domain.local.Cursor
-import com.hovans.local.domain.local.LocalRepository
+import com.hovans.local.domain.Cursor
+import com.hovans.local.domain.LocalRepository
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
-import java.lang.RuntimeException
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit

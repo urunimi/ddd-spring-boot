@@ -1,4 +1,4 @@
-package com.hovans.local.domain.local
+package com.hovans.local.domain
 
 interface RankingRepository {
 	fun increase(keyword: String): Int
