@@ -21,9 +21,13 @@ class LocalService constructor(val localRepositories: ArrayList<LocalRepository>
 
 	private fun getPlaceImageUrls(placeName: String): List<String> {
 		for (repository in localRepositories) {
-			val imageUrls = repository.getPlaceImages(placeName)
-			if (!imageUrls.isEmpty()) {
-				return imageUrls
+			try {
+				val imageUrls = repository.getPlaceImages(placeName)
+				if (!imageUrls.isEmpty()) {
+					return imageUrls
+				}
+			} catch (ex: Exception) {
+				ex.printStackTrace()
 			}
 		}
 		return ArrayList<String>()
@@ -44,12 +48,16 @@ class LocalService constructor(val localRepositories: ArrayList<LocalRepository>
 		}
 
 		for (repository in localRepositories) {
-			val (placeNames, cursor) = repository.getPlaceNames(keyword, prevCursor)
-			if (!placeNames.isEmpty()) {
-				if (cursor.currentPage > cursor.totalPages) {  // Last page
-					return Pair(placeNames, null)
+			try {
+				val (placeNames, cursor) = repository.getPlaceNames(keyword, prevCursor)
+				if (!placeNames.isEmpty()) {
+					if (cursor.currentPage > cursor.totalPages) {  // Last page
+						return Pair(placeNames, null)
+					}
+					return Pair(placeNames, gson.toJson(cursor))
 				}
-				return Pair(placeNames, gson.toJson(cursor))
+			} catch (ex: Exception) {
+				ex.printStackTrace()
 			}
 		}
 		return Pair(ArrayList<String>(), null)
