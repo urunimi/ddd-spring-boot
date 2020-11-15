@@ -1,12 +1,14 @@
 package com.hovans.local.domain
 
 import com.google.gson.Gson
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class LocalService constructor(val localRepositories: ArrayList<LocalRepository>, val rankingRepository: RankingRepository) {
 
+	private val logger = LoggerFactory.getLogger(LocalService::class.java)
 	val gson = Gson()
 
 	fun getPlaces(keyword: String, prevCursor: String?): Pair<List<Place>, String?> {
@@ -27,7 +29,7 @@ class LocalService constructor(val localRepositories: ArrayList<LocalRepository>
 					return imageUrls
 				}
 			} catch (ex: Exception) {
-				ex.printStackTrace()
+				logger.error("getPlaceImageUrls", ex)
 			}
 		}
 		return ArrayList<String>()
@@ -57,7 +59,7 @@ class LocalService constructor(val localRepositories: ArrayList<LocalRepository>
 					return Pair(placeNames, gson.toJson(cursor))
 				}
 			} catch (ex: Exception) {
-				ex.printStackTrace()
+				logger.error("getPlaceNames", ex)
 			}
 		}
 		return Pair(ArrayList<String>(), null)
