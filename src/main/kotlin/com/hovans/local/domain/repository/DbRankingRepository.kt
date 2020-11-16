@@ -19,59 +19,60 @@ import javax.persistence.*
 class DbRankingRepository(private val jpaRepository: JpaRankingRepository) : RankingRepository {
 
 	private val logger = LoggerFactory.getLogger(DbRankingRepository::class.java)
+	private val retryCount = 10
 
 	/**
-	 * rankingCache
+	 * rankings
 	 * Top 10 을 캐시에 저장해서 Worst 케이스 제외 O(1) 시간 안에 Ranking 을 가져올 수 있도록 한다.
 	 */
-	private var rankingCache: List<Ranking>? = null
+	private var rankings = Collections.synchronizedList(ArrayList<Ranking>())
+	private var rankingSet = Collections.synchronizedSet(HashSet<String>())
 
 	override fun increase(keyword: String): Int {
-		for (i in 0..10) { // Optimistic locking
+		for (i in 1..retryCount) { // Optimistic locking
 			try {
 				val rankingHolder = jpaRepository.findById(keyword)
-				var ranking = DbRanking(keyword = keyword, count = 1, version = 1)
+				var dbRanking = DbRanking(keyword = keyword, count = 1, version = 1)
 				if (rankingHolder.isPresent) {
-					ranking = rankingHolder.get()
-					ranking.count += 1
+					dbRanking = rankingHolder.get()
+					dbRanking.count += 1
 				}
-				jpaRepository.save(ranking)
-				invalidateCacheIfItNeeds(ranking.count)
-				return ranking.count
+				jpaRepository.save(dbRanking)
+				resetCacheIfItNeeds(Ranking(keyword = keyword, count = dbRanking.count))
+				return dbRanking.count
 			} catch (ex: Exception) {
 				logger.error("increase", ex)
+				if (i == retryCount) throw ex   // Retry 를 모두 실패한 경우 Server error 발생
 			}
 		}
 		return 0
 	}
 
-	/**
-	 * 어떤 키워드의 호출 count 가 증가했을 때 아래 두가지 경우 cache 를 invalidate 한다.
-	 * - 캐시의 사이즈가 10이 안될 때
-	 * - 캐시의 마지막 아이템의 count 보다 새로운 count 가 클 때
-	 */
-	private fun invalidateCacheIfItNeeds(newCount: Int) {
-		rankingCache?.let { it ->
-			if (it.size < 10 || it[it.size - 1].count < newCount) {
-				rankingCache = null
-			}
+	private fun resetCacheIfItNeeds(ranking: Ranking) {
+		if (rankings.isEmpty()) return
+		if (rankingSet.contains(ranking.keyword) || rankings[rankings.size-1].count < ranking.count) {
+			rankingSet.clear()
+			rankings.clear()
 		}
 	}
 
-	private fun buildCache() {
+	@Synchronized
+	private fun buildRankingsFromDb() {
 		val dbRankings = jpaRepository.findTop10ByOrderByCountDesc()
 		val rankings = ArrayList<Ranking>()
 		for (dbRanking in dbRankings) {
-			rankings.add(Ranking(keyword = dbRanking.keyword, count = dbRanking.count))
+			val ranking = Ranking(keyword = dbRanking.keyword, count = dbRanking.count)
+			rankings.add(ranking)
+			rankingSet.add(ranking.keyword)
 		}
-		rankingCache = rankings
+		this.rankings = rankings
 	}
 
 	override fun getRankings(): List<Ranking> {
-		if (rankingCache == null) {
-			buildCache()
+		if (rankings.isEmpty()) {
+			buildRankingsFromDb()
 		}
-		return rankingCache!!
+		return rankings
 	}
 }
 
@@ -80,6 +81,7 @@ class DbRankingRepository(private val jpaRepository: JpaRankingRepository) : Ran
 class DbRanking(
 		@Id val keyword: String,
 		var count: Int,
+		@Suppress("unused")
 		@Version var version: Int, // Optimistic locking 을 지원하기 위해
 )
 
