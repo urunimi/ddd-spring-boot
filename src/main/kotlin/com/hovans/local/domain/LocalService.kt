@@ -3,6 +3,7 @@ package com.hovans.local.domain
 import com.google.gson.Gson
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.lang.RuntimeException
 import java.util.*
 
 @Service
@@ -41,9 +42,9 @@ class LocalService constructor(val localRepositories: ArrayList<LocalRepository>
 	 */
 	private fun getPlaceNames(keyword: String, cursorStr: String?): Pair<List<String>, String?> {
 		var prevCursor = Cursor(
+				totalPages = 0,
 				currentPage = 1,
 				pageSize = 0,
-				totalPages = 0,
 		)
 		cursorStr?.let {
 			prevCursor = gson.fromJson(cursorStr, Cursor::class.java)
@@ -52,17 +53,15 @@ class LocalService constructor(val localRepositories: ArrayList<LocalRepository>
 		for (repository in localRepositories) {
 			try {
 				val (placeNames, cursor) = repository.getPlaceNames(keyword, prevCursor)
-				if (!placeNames.isEmpty()) {
-					if (cursor.currentPage > cursor.totalPages) {  // Last page
-						return Pair(placeNames, null)
-					}
-					return Pair(placeNames, gson.toJson(cursor))
+				if (cursor.currentPage > cursor.totalPages) {  // Last page
+					return Pair(placeNames, null)
 				}
+				return Pair(placeNames, gson.toJson(cursor))
 			} catch (ex: Exception) {
 				logger.error("getPlaceNames", ex)
 			}
 		}
-		return Pair(ArrayList<String>(), null)
+		throw RuntimeException("Failed to get placeNames")
 	}
 
 	fun getRankings(): List<Ranking> {

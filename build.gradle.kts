@@ -20,7 +20,7 @@ configurations {
 }
 
 repositories {
-	mavenCentral()
+	jcenter()
 }
 
 dependencies {
@@ -37,6 +37,7 @@ dependencies {
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.junit.jupiter:junit-jupiter")
+	testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
 }
 
 tasks.withType<Test> {
