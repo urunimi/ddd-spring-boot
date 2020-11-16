@@ -28,12 +28,9 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("com.h2database:h2")
 	implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 	implementation("com.squareup.retrofit2:retrofit:2.9.0")
-
-	annotationProcessor("org.projectlombok:lombok")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.junit.jupiter:junit-jupiter")
