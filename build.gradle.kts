@@ -30,14 +30,16 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("com.h2database:h2")
-	implementation("com.squareup.retrofit2:converter-gson:2.6.2")
-	implementation("com.squareup.retrofit2:retrofit:2.6.0")
+	implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+	implementation("com.squareup.retrofit2:retrofit:2.9.0")
 
 	annotationProcessor("org.projectlombok:lombok")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.junit.jupiter:junit-jupiter")
 	testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
+	testImplementation("com.squareup.okhttp3:mockwebserver:4.9.0")
+	testImplementation("com.squareup.okhttp3:okhttp:4.9.0")
 }
 
 tasks.withType<Test> {

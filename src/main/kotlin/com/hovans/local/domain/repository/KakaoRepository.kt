@@ -3,6 +3,7 @@ package com.hovans.local.domain.repository
 import com.google.gson.annotations.SerializedName
 import com.hovans.local.domain.Cursor
 import com.hovans.local.domain.LocalRepository
+import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import retrofit2.Retrofit
@@ -14,13 +15,13 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
 
-class KakaoRepository : LocalRepository {
+class KakaoRepository(baseUrl: HttpUrl = HttpUrl.get("https://dapi.kakao.com")) : LocalRepository {
 
 	private val defaultSize = 3
 	private val kakaoClient: KakaoClient
 
 	init {
-		val apiKey = System.getenv("KAKAO_API_KEY")?: throw RuntimeException("{{KAKAO_API_KEY}} env variable is not set.")
+		val apiKey = System.getenv("KAKAO_API_KEY") ?: throw RuntimeException("{{KAKAO_API_KEY}} env variable is not set.")
 
 		val httpClient = OkHttpClient()
 				.newBuilder()
@@ -33,7 +34,7 @@ class KakaoRepository : LocalRepository {
 							.build()
 					it.proceed(request)
 				}.build()
-		val retrofit = Retrofit.Builder().baseUrl("https://dapi.kakao.com")
+		val retrofit = Retrofit.Builder().baseUrl(baseUrl)
 				.addConverterFactory(GsonConverterFactory.create())
 				.client(httpClient)
 				.build()
