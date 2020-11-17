@@ -3,11 +3,10 @@ package com.hovans.local.domain
 import com.google.gson.Gson
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.lang.RuntimeException
 import java.util.*
 
 @Service
-class LocalService constructor(val localRepositories: ArrayList<LocalRepository>, val rankingRepository: RankingRepository) {
+class LocalService constructor(val localRepositories: List<LocalRepository>, val rankingRepository: RankingRepository) {
 
 	private val logger = LoggerFactory.getLogger(LocalService::class.java)
 	val gson = Gson()

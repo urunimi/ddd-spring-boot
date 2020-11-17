@@ -1,6 +1,5 @@
 package com.hovans.local.rest
 
-import com.hovans.local.domain.LocalRepository
 import com.hovans.local.domain.LocalService
 import com.hovans.local.domain.repository.DbRankingRepository
 import com.hovans.local.domain.repository.JpaRankingRepository
@@ -12,23 +11,24 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
 
 
 @RestController
-class LocalController @Autowired constructor(jpaRankingRepository: JpaRankingRepository) {
+class LocalController {
 
 	final var localService: LocalService
 
-	init {
-		val repositories = ArrayList<LocalRepository>()
-		repositories.add(KakaoRepository())
-		repositories.add(NaverRepository())
+	@Autowired constructor(jpaRankingRepository: JpaRankingRepository) {
+		val repositories = listOf(KakaoRepository(), NaverRepository())
 		localService = LocalService(repositories, DbRankingRepository(jpaRankingRepository))
 	}
 
+	constructor(localService: LocalService) {
+		this.localService = localService
+	}
+
 	@GetMapping(value = ["/v1/places"])
-	fun getPlaces(@RequestParam(name = "keyword", defaultValue = "") keyword: String,
+	fun getPlaces(@RequestParam(name = "keyword") keyword: String,
 	              @RequestParam(name="cursor", required = false) cursor: String?): ResponseEntity<SearchRes> {
 		if (keyword == "") {
 			return ResponseEntity(HttpStatus.BAD_REQUEST)
