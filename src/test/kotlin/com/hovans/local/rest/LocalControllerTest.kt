@@ -20,7 +20,7 @@ import org.springframework.web.context.request.ServletRequestAttributes
 @SpringBootTest
 @ExtendWith(MockitoExtension::class)
 class LocalControllerTest constructor(
-		@Mock val localService: LocalService,
+	@Mock private val localService: LocalService,
 ) {
 		private val localController: LocalController = LocalController(localService)
 

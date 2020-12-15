@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import java.util.*
 
 @SpringBootTest
-class DbRankingRepositoryTest @Autowired constructor(val jpaRepository: JpaRankingRepository) {
+class DbRankingRepositoryTest @Autowired constructor(private val jpaRepository: JpaRankingRepository) {
 
 	val rankingRepository = DbRankingRepository(jpaRepository)
 
@@ -36,7 +36,7 @@ class DbRankingRepositoryTest @Autowired constructor(val jpaRepository: JpaRanki
 	fun getRankings(count: Int) {
 		val keywords = HashMap<String, Int>()
 		for (i in 1..count) {
-			keywords.put(i.toString(), i)
+			keywords[i.toString()] = i
 			for (j in 1..i) rankingRepository.increase(i.toString())
 		}
 
@@ -47,7 +47,7 @@ class DbRankingRepositoryTest @Autowired constructor(val jpaRepository: JpaRanki
 
 		assertThat(rankings.size).isEqualTo(expectedSize)
 
-		for (i in 0..expectedSize - 1) {
+		for (i in 0 until expectedSize) {
 			assertThat(rankings[i].keyword).isEqualTo((count - i).toString())
 			assertThat(rankings[i].count).isEqualTo(keywords[(count - i).toString()])
 		}

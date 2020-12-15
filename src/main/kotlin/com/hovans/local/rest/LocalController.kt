@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class LocalController {
 
-	final var localService: LocalService
+	private final var localService: LocalService
 
-	@Autowired constructor(jpaRankingRepository: JpaRankingRepository) {
+	@Autowired
+	constructor(jpaRankingRepository: JpaRankingRepository) {
 		val repositories = listOf(KakaoRepository(), NaverRepository())
 		localService = LocalService(repositories, DbRankingRepository(jpaRankingRepository))
 	}

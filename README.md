@@ -1,5 +1,8 @@
+# ddd-spring-boot
 
-## 프로젝트 실행 방법
+
+
+## 실행 방법
 
 ### 환경변수 설정
 
@@ -25,22 +28,6 @@
 ```shell script
 > ./gradlew test
 ```
-
-## 부하 대응 방법
-
-### API 자체 부하 혹은 Remote call(Kakao, Naver) 부하가 클 경우
-
-- API 호출 결과를 DB 에 저장해서 캐시로 활용. 적절한 Expire 시간 둠 (Redis 나 DynamoDB 와 같은 TTL 지원 DB 활용)
-
-### DDOS 처럼 하나의 클라이언트에서 많은 요청이 들어오는 경우
-
-- Rate limit 을 활용해서 쓰로틀링 로직을 개발 (IP 혹은 Client 별 Limit 설정)
-
-## Known issues
-
-- API 의 Pagination 이 Query 기반이 아닌 Page index 기준으로 응답을 내리기 때문에 중간에 새로운 데이터가 들어올 경우 데이터의 순서에 문제가 발생.
-    - API 응답의 기준을 Place 혹은 Image 의 생성시간(삭제하지 않는다는 가정) 기준 오름차순으로 정렬한다면 문제 없음.
-- Naver 의 경우 검색 시작 위치(`start`)가 1이 최대 라서 Pagination 이 불가능 ([Link](https://developers.naver.com/docs/search/local/))
 
 ## 사용한 오픈소스
 

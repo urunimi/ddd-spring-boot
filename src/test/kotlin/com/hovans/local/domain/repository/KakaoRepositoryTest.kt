@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test
  */
 class KakaoRepositoryTest {
 
-	lateinit var mockWebServer: MockWebServer
-	lateinit var kakaoRepository: KakaoRepository
+	private lateinit var mockWebServer: MockWebServer
+	private lateinit var kakaoRepository: KakaoRepository
 
 	@BeforeEach
 	fun beforeEach() {
@@ -64,13 +64,15 @@ class KakaoRepositoryTest {
 						"    }," +
 						"    \"total_count\": 32" +
 						"  }" +
-						"}"))
+						"}"
+				)
+		)
 
 		// When
 		val (res, nextCursor) = kakaoRepository.getPlaceNames(keyword, cursor)
 
 		// Then
-		for (i in 0..res.size - 1) {
+		for (i in res.indices) {
 			assertThat(res[i]).isEqualTo(placeNames[i])
 		}
 		assertThat(nextCursor.currentPage).isEqualTo(cursor.currentPage + 1)
@@ -100,13 +102,15 @@ class KakaoRepositoryTest {
 						"    \"pageable_count\": 32," +
 						"    \"total_count\": 32" +
 						"  }" +
-						"}"))
+						"}"
+				)
+		)
 
 		// When
 		val res = kakaoRepository.getPlaceImages(placeName)
 
 		// Then
-		for (i in 0..res.size - 1) {
+		for (i in res.indices) {
 			assertThat(res[i]).isEqualTo(imageUrls[i])
 		}
 	}

@@ -32,15 +32,15 @@ class LocalServiceTest constructor(
 		val placeNames = listOf("one", "two")
 		val imageUrl = "http://imagehub.com/images?id=1"
 		`when`(localRepository.getPlaceNames(eq(keyword), any()))
-				.thenReturn(Pair(placeNames, Cursor(2, 2, 3)))
+			.thenReturn(Pair(placeNames, Cursor(2, 2, 3)))
 		`when`(localRepository.getPlaceImages(any()))
-				.thenReturn(listOf(imageUrl))
+			.thenReturn(listOf(imageUrl))
 
 		// When
 		val (places, cursor) = localService.getPlaces(keyword, "{\"totalPages\":2,\"currentPage\":1,\"pageSize\":3}")
 
 		// Then
-		for (i in 0..places.size - 1) {
+		for (i in places.indices) {
 			assertThat(places[i].title).isEqualTo(placeNames[i])
 			assertThat(places[i].imageUrls[0]).isEqualTo(imageUrl)
 		}
@@ -65,11 +65,11 @@ class LocalServiceTest constructor(
 	fun getRankings() {
 		val rankings = listOf(Ranking("two", 2), Ranking("one", 1))
 		`when`(rankingRepository.getRankings())
-				.thenReturn(rankings)
+			.thenReturn(rankings)
 
 		val res = localService.getRankings()
 
-		for (i in 0..rankings.size - 1) {
+		for (i in rankings.indices) {
 			assertThat(rankings[i]).isEqualTo(res[i])
 		}
 	}

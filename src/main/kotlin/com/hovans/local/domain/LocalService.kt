@@ -25,7 +25,7 @@ class LocalService constructor(val localRepositories: List<LocalRepository>, val
 		for (repository in localRepositories) {
 			try {
 				val imageUrls = repository.getPlaceImages(placeName)
-				if (!imageUrls.isEmpty()) {
+				if (imageUrls.isNotEmpty()) {
 					return imageUrls
 				}
 			} catch (ex: Exception) {
